@@ -1,12 +1,10 @@
 from dataclasses import dataclass, field
 from typing import NewType, Any
 
-from domain.entities.base import Entity
-from domain.services import next_id
-from domain.values.messages import Text, Title
-
-MessageId = NewType('MessageId', str)
-ChatId = NewType('ChatId', str)
+from modules.chat.domain.events import NewMessageReceivedEvent
+from modules.chat.domain.values import Text, Title, MessageId, ChatId
+from seedwork.domain.entities import Entity, AggregateRoot
+from seedwork.domain.services import next_id
 
 
 @dataclass
@@ -27,10 +25,10 @@ class Message(Entity):
 
 
 @dataclass
-class Chat(Entity):
+class Chat(AggregateRoot):
     id: ChatId = field(
         default_factory=lambda: ChatId(next_id()),
-        kw_only=True
+        kw_only=True,
     )
     title: Title
     messages: set[Message] = field(
@@ -40,3 +38,10 @@ class Chat(Entity):
 
     def add_message(self, message: Message) -> None:
         self.messages.add(message)
+        self.register_event(
+            NewMessageReceivedEvent(
+                message_id=message.id,
+                message_text=message.text.as_generic_type(),
+                chat_id=self.id
+            )
+        )

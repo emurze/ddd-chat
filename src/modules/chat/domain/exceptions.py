@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from domain.exceptions.base import ApplicationException
+from seedwork.domain.exceptions import ApplicationException
 
 
 @dataclass(eq=False)

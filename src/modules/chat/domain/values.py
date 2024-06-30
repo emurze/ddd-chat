@@ -1,11 +1,15 @@
 from dataclasses import dataclass
+from typing import NewType
 
-from domain.exceptions.messages import (
+from modules.chat.domain.exceptions import (
     TextIsEmptyException,
     TitleIsEmptyException,
     TitleTooLongException,
 )
-from domain.values.base import ValueObject
+from seedwork.domain.values import ValueObject
+
+MessageId = NewType('MessageId', str)
+ChatId = NewType('ChatId', str)
 
 
 @dataclass(frozen=True)

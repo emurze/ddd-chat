@@ -28,8 +28,8 @@ class AppConfig(BaseSettings):
     debug: bool = True
     docs_url: str = "/docs"
     redoc_url: str = "/redoc"
-    secret_key: SecretStr
     version: str = "0.0.0"
+    secret_key: SecretStr
 
     # Logging
     log_level_in: Optional[str] = Field(None, validation_alias="log_level")

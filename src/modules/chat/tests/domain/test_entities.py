@@ -2,10 +2,10 @@ from datetime import datetime
 
 import pytest
 
-from domain.entities.messages import Message, Chat
-from domain.exceptions.messages import TextIsEmptyException, \
-    TitleTooLongException, TitleIsEmptyException
-from domain.values.messages import Text, Title
+from modules.chat.domain.entities import Message, Chat
+from modules.chat.domain.exceptions import TextIsEmptyException, \
+    TitleIsEmptyException, TitleTooLongException
+from modules.chat.domain.values import Text, Title
 
 
 @pytest.mark.unit
@@ -63,3 +63,18 @@ def test_chat_can_add_message() -> None:
     chat.add_message(message)
 
     assert message in chat.messages
+
+
+@pytest.mark.unit
+def test_chat_can_register_event() -> None:
+    text = Text("Hello, boy!")
+    message = Message(text=text)
+
+    title = Title("Best Chat")
+    chat = Chat(title=title)
+
+    chat.add_message(message)
+
+    [event] = chat.pull_events()
+    assert event.message_text == message.text.as_generic_type()
+    assert event.message_id == message.id
