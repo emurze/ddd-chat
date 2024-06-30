@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Emurze <rozanov7475@yandex.by>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dependency-injector = "^4.41.0"
+fastapi = {extras = ["uvicorn"], version = "^0.111.0"}
+pydantic = "^2.7.4"
+pydantic-settings = "^2.3.3"
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+
+[tool.poetry.dev-dependencies]
+poethepoet = "^0.26.1"
+
+[tool.poe.env]
+DC = "docker compose"
+EXEC = "docker exec -it"
+APP_CONTAINER = "api"
+
+[tool.poe.tasks]
+up      = "$DC up --build -d"
+
+logs    = "$DC logs -f $APP_CONTAINER"
+
+test    = "$EXEC $APP_CONTAINER pytest"
+
+shell   = "$EXEC $APP_CONTAINER bash"
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::Warning:.*test class 'TestRunner'.*",
+    "ignore::DeprecationWarning:httpx.*"
+]
+addopts = ["-rsxX", "-l", "--tb=short", "--strict-markers", "-s"]
+xfail_strict = true
+cache_dir = ".venv/cache/pytest"
+asyncio_mode = "auto"
+markers = [
+    "unit: marks test as unit test i.e. not using any external services (deselect with '-m \"not unit\"')",
+    "integration: marks tests as integration i.e. using a database (deselect with '-m \"not integration\"')",
+    "e2e: marks tests as e2e tests i.e. using a client api and a database (deselect with '-m \"not e2e\"')",
+    "marked: just marked"
+]
+pythonpath = [".", "src"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
