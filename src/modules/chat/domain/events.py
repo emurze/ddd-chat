@@ -8,3 +8,9 @@ class NewMessageReceivedEvent(Event):
     message_text: str
     message_id: str
     chat_id: str
+
+
+@dataclass(frozen=True)
+class NewChatCreated(Event):
+    chat_id: str
+    title: str

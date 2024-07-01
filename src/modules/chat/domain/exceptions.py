@@ -1,24 +1,24 @@
 from dataclasses import dataclass
 
-from seedwork.domain.exceptions import ApplicationException
+from seedwork.domain.exceptions import DomainException
 
 
 @dataclass(eq=False)
-class TextIsEmptyException(ApplicationException):
+class TextIsEmptyException(DomainException):
     @property
     def message(self):
         return f"Text is empty."
 
 
 @dataclass(eq=False)
-class TitleIsEmptyException(ApplicationException):
+class TitleIsEmptyException(DomainException):
     @property
     def message(self):
         return f"Title is empty."
 
 
 @dataclass(eq=False)
-class TitleTooLongException(ApplicationException):
+class TitleTooLongException(DomainException):
     text: str
 
     @property

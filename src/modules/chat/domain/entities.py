@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import NewType, Any
+from typing import Any
 
-from modules.chat.domain.events import NewMessageReceivedEvent
+from modules.chat.domain.events import NewMessageReceivedEvent, NewChatCreated
 from modules.chat.domain.values import Text, Title, MessageId, ChatId
 from seedwork.domain.entities import Entity, AggregateRoot
 from seedwork.domain.services import next_id
@@ -35,6 +35,17 @@ class Chat(AggregateRoot):
         default_factory=set,
         kw_only=True,
     )
+
+    @classmethod
+    def create(cls, title: Title) -> 'Chat':
+        chat = cls(title=title)
+        chat.register_event(
+            NewChatCreated(
+                chat_id=chat.id,
+                title=title.as_generic_type(),
+            )
+        )
+        return chat
 
     def add_message(self, message: Message) -> None:
         self.messages.add(message)
