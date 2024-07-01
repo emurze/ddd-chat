@@ -8,12 +8,14 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
-dependency-injector = "^4.41.0"
 fastapi = {extras = ["uvicorn"], version = "^0.111.0"}
 pydantic = "^2.7.4"
 pydantic-settings = "^2.3.3"
 pytest = "^8.2.2"
 pytest-asyncio = "^0.23.7"
+faker = "^26.0.0"
+black = "^24.4.2"
+punq = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 poethepoet = "^0.26.1"
@@ -48,6 +50,9 @@ markers = [
     "marked: just marked"
 ]
 pythonpath = [".", "src"]
+
+[tool.black]
+line-length = 79
 
 [build-system]
 requires = ["poetry-core"]

@@ -7,13 +7,6 @@ class Command:
     pass
 
 
-@dataclass(frozen=True)
-class CommandHandler(abc.ABC):
+class ICommandHandler(abc.ABC):
     @abc.abstractmethod
-    async def handle(self, command: Command):
-        ...
-
-
-@dataclass(frozen=True)
-class CommandResult:
-    pass
+    async def handle(self, command: Command): ...

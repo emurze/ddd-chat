@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 from modules.chat.application.exceptions import ChatTitleAlreadyExistsException
 from modules.chat.domain.entities import Chat
-from modules.chat.domain.repositories import IChatRepository
+from modules.chat.application.repositories import IChatRepository
 from modules.chat.domain.values import Title
-from seedwork.application.commands import Command, CommandHandler
+from seedwork.application.commands import Command, ICommandHandler
 
 
 @dataclass(frozen=True)
@@ -13,7 +13,7 @@ class CreateChatCommand(Command):
 
 
 @dataclass(frozen=True)
-class CreateChatHandler(CommandHandler):
+class CreateChatHandler(ICommandHandler):
     chat_repo: IChatRepository
 
     async def handle(self, command: CreateChatCommand) -> Chat:
@@ -22,5 +22,6 @@ class CreateChatHandler(CommandHandler):
 
         title = Title(command.title)
         chat = Chat.create(title=title)
-        # TODO: pull events from entities
+
+        await self.chat_repo.add(chat)  # TODO: pull events from entities
         return chat

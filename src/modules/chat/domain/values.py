@@ -8,8 +8,8 @@ from modules.chat.domain.exceptions import (
 )
 from seedwork.domain.values import ValueObject
 
-MessageId = NewType('MessageId', str)
-ChatId = NewType('ChatId', str)
+MessageId = NewType("MessageId", str)
+ChatId = NewType("ChatId", str)
 
 
 @dataclass(frozen=True)

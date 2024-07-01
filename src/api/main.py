@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from config.container import container
+from config.config import AppConfig
+from config.containers import init_container
+from config.log_config import configure_logging
+from api.v1.chats.handlers import router as chats_router
 
 
-def create_app():
-    # Logging
-    config = container.config()
-    config.configure_logging()
+def create_app() -> FastAPI:
+    container = init_container()
+    config = container.resolve(AppConfig)
+    configure_logging(config.log_level, config.debug)
 
     app = FastAPI(
         title=config.app_title,
@@ -19,6 +22,7 @@ def create_app():
         config=config,
         container=container,
     )
+    app.include_router(chats_router)
 
     # noinspection PyTypeChecker
     app.add_middleware(

@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from modules.chat.domain.events import NewMessageReceivedEvent, NewChatCreated
+from modules.chat.domain.events import NewMessageReceived, NewChatCreated
 from modules.chat.domain.values import Text, Title, MessageId, ChatId
 from seedwork.domain.entities import Entity, AggregateRoot
 from seedwork.domain.services import next_id
@@ -10,8 +10,7 @@ from seedwork.domain.services import next_id
 @dataclass
 class Message(Entity):
     id: MessageId = field(
-        default_factory=lambda: MessageId(next_id()),
-        kw_only=True
+        default_factory=lambda: MessageId(next_id()), kw_only=True
     )
     text: Text
 
@@ -37,7 +36,7 @@ class Chat(AggregateRoot):
     )
 
     @classmethod
-    def create(cls, title: Title) -> 'Chat':
+    def create(cls, title: Title) -> "Chat":
         chat = cls(title=title)
         chat.register_event(
             NewChatCreated(
@@ -50,9 +49,9 @@ class Chat(AggregateRoot):
     def add_message(self, message: Message) -> None:
         self.messages.add(message)
         self.register_event(
-            NewMessageReceivedEvent(
+            NewMessageReceived(
                 message_id=message.id,
                 message_text=message.text.as_generic_type(),
-                chat_id=self.id
+                chat_id=self.id,
             )
         )
