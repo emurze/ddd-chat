@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import pytest
 
 from modules.chat.domain.entities import Message, Chat

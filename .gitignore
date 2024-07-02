@@ -1,5 +1,8 @@
-# Data
+# Idea
+*.idea
 
+
+# Data
 *htmlcov*
 
 # venv

@@ -15,13 +15,12 @@ from seedwork.application.commands import ICommandHandler
 from seedwork.application.mediator import Mediator
 
 
-# @lru_cache(1)
-# def init_container() -> Container:
-#     return _init_container()
-
-
 @lru_cache(1)
 def init_container() -> Container:
+    return _init_container()
+
+
+def _init_container() -> Container:
     container = Container()
 
     # Infrastructure
