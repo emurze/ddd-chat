@@ -3,7 +3,7 @@ from punq import Container
 from starlette import status
 
 from config.containers import init_container
-from api.v1.chats.schemas import (
+from api.chats.schemas import (
     CreateChatResponseSchema,
     CreateChatRequestSchema,
 )

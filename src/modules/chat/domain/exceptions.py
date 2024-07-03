@@ -23,4 +23,4 @@ class TitleTooLongException(DomainException):
 
     @property
     def message(self):
-        return f"Text is too long {self.text[:255]}..."
+        return f"Title is too long {self.text[:255]}..."
