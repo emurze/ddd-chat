@@ -6,7 +6,7 @@ from config.log_config import LogLevel
 
 class AppConfig(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="../.env.example",
+        env_file="../.env",
         extra="allow",
     )
 

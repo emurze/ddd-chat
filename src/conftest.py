@@ -1,22 +1,21 @@
 import pytest
-from punq import Container
+from injector import Injector
 
-from fixtures import init_dummy_container
-
+from fixtures import init_memory_injector
 from modules.chat.application.repositories import IChatRepository
 from seedwork.application.mediator import Mediator
 
 
 @pytest.fixture(scope="function")
-def container() -> Container:
-    return init_dummy_container()
+def injector() -> Injector:
+    return init_memory_injector()
 
 
 @pytest.fixture(scope="function")
-def mediator(container: Container) -> Mediator:
-    return container.resolve(Mediator)
+def mediator(injector: Injector) -> Mediator:
+    return injector.get(Mediator)
 
 
 @pytest.fixture(scope="function")
-def chat_repo(container: Container) -> IChatRepository:
-    return container.resolve(IChatRepository)
+def chat_repo(injector: Injector) -> IChatRepository:
+    return injector.get(IChatRepository)

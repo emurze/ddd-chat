@@ -1,15 +1,16 @@
 from fastapi import FastAPI
-from punq import Container
+from injector import Injector
 from starlette.middleware.cors import CORSMiddleware
 
-from config.config import AppConfig
-from config.containers import init_container
-from config.log_config import configure_logging
 from api.chats.handlers import router as chats_router
+from config.config import AppConfig
+from config.containers import init_injector
+from config.log_config import configure_logging
 
 
-def create_app(container: Container = init_container()) -> FastAPI:
-    config = container.resolve(AppConfig)
+def create_app(injector: Injector | None = None) -> FastAPI:
+    injector = injector or init_injector()
+    config = injector.get(AppConfig)
     configure_logging(config.log_level, config.debug)
 
     app = FastAPI(
@@ -18,7 +19,7 @@ def create_app(container: Container = init_container()) -> FastAPI:
         redoc_url=config.redoc_url,
         version=config.version,
         debug=config.debug,
-        container=container,
+        injector=injector,
     )
     app.include_router(chats_router)
 

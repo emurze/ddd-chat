@@ -1,26 +1,20 @@
-from functools import lru_cache
-
 import pytest
 from fastapi import FastAPI
-from punq import Container
+from injector import Injector
 from starlette.testclient import TestClient
 
 from api.main import create_app
-from config.containers import init_container
-from fixtures import init_dummy_container
+from api.tests.fixtures import init_e2e_injector
 
 
-def init_e2e_container():
-    """Inits container with test_db"""
-    container = ...
+@pytest.fixture(scope="session")
+def injector() -> Injector:
+    return init_e2e_injector()
 
 
-@pytest.fixture(scope="function")  # TODO: add db
-def app() -> FastAPI:
-    container = init_e2e_container()
-    app = create_app(container)
-    app.dependency_overrides[init_container] = _init_dummy_container  # noqa
-    return app
+@pytest.fixture(scope="function")
+def app(injector: Injector) -> FastAPI:
+    return create_app(injector)
 
 
 @pytest.fixture(scope="function")

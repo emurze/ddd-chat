@@ -1,3 +1,6 @@
+from injector import Injector
+from starlette.requests import Request
 
 
-def
+async def get_injector(request: Request) -> Injector:
+    return request.app.extra["injector"]

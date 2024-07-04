@@ -1,9 +1,7 @@
-from collections.abc import Callable
-from functools import lru_cache, partial
-from typing import Optional
+from typing import TypeAlias
 
 import motor
-from injector import Module, singleton, provider, Binder
+from injector import Module, singleton, Binder, Injector, inject
 from motor.core import AgnosticClient
 
 from config.config import AppConfig
@@ -14,18 +12,17 @@ from modules.chat.application.commands.create_chat import (
 from modules.chat.application.repositories import IChatRepository
 from modules.chat.infra.repositories import MongoChatRepository
 from seedwork.application.mediator import Mediator
+from seedwork.infra.injector import singleton_provider
+
+MongoDBClient: TypeAlias = AgnosticClient
 
 
-class ApplicationModule(Module):
+class AppModule(Module):
     def configure(self, binder: Binder) -> None:
-        binder.bind(CreateChatHandler)  # Repository should be injected!
+        binder.bind(AppConfig, to=AppConfig, scope=singleton)
 
     @singleton_provider
-    def provide_config(self) -> AppConfig:
-        return AppConfig()
-
-    @singleton_provider
-    def provide_mongodb(self, config: AppConfig) -> AgnosticClient:
+    def provide_mongodb_client(self, config: AppConfig) -> MongoDBClient:
         return motor.MotorClient(
             config.mongodb_connection_dsn,
             serverSelectionTimeoutMS=5000,
@@ -34,28 +31,24 @@ class ApplicationModule(Module):
     @singleton_provider
     def provide_mongodb_chat_repository(
         self,
-        mongodb: AgnosticClient,
+        mongodb_client: MongoDBClient,
         config: AppConfig,
     ) -> IChatRepository:
         return MongoChatRepository(
-            mongo_db_client=mongodb,
+            mongo_db_client=mongodb_client,
             mongo_db_db_name=config.mongodb_chat_database,
             mongo_db_collection_name=config.mongodb_chat_collection,
         )
 
     @singleton_provider
-    def provide_mediator(
-        self,
-        mongodb_chat_repository: IChatRepository,
-    ) -> Mediator:
+    def provide_mediator(self, injector: Injector) -> Mediator:
         mediator = Mediator()
         mediator.register_command(
             CreateChatCommand,
-            [CreateChatHandler(chat_repo=mongodb_chat_repository)],
+            [injector.get(inject(CreateChatHandler))],
         )
         return mediator
 
 
-@lru_cache(1)
-def init_container() -> Container:
-    return _init_container()
+def init_injector() -> Injector:
+    return Injector(AppModule())

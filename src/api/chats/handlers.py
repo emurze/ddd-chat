@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
-from punq import Container
+from fastapi import APIRouter, HTTPException, Depends
+from injector import Injector
 from starlette import status
 
-from config.containers import init_container
 from api.chats.schemas import (
     CreateChatResponseSchema,
     CreateChatRequestSchema,
 )
+from api.dependencies import get_injector
 from modules.chat.application.commands.create_chat import CreateChatCommand
 from seedwork.application.exceptions import ApplicationException
 from seedwork.application.mediator import Mediator
@@ -31,9 +31,9 @@ router = APIRouter(prefix="/chats", tags=["Chats"])
 )
 async def create_chat(
     request: CreateChatRequestSchema,
-    container: Container = Depends(init_container),
+    injector: Injector = Depends(get_injector),
 ):
-    mediator: Mediator = container.resolve(Mediator)
+    mediator: Mediator = injector.get(Mediator)
 
     try:
         command = CreateChatCommand(title=request.title)
