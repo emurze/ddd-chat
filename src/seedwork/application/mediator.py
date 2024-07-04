@@ -40,14 +40,19 @@ class Mediator:
     ) -> None:
         self.command_map[command_type] += command_handlers
 
-    async def handle_event(self, event: Event) -> list[Result]:
-        event_type = type(event)
-        handlers = self.event_map[event_type]
+    async def publish(self, events: Iterable[Event]) -> list[Result]:
+        result = []
 
-        if not handlers:
-            raise EventHandlersNotRegisteredException(event_type)
+        for event in events:
+            event_type = type(event)
+            handlers = self.event_map[event_type]
 
-        return [await handler.handle(event) for handler in handlers]
+            if not handlers:
+                raise EventHandlersNotRegisteredException(event_type)
+
+            result += [await handler.handle(event) for handler in handlers]
+
+        return result
 
     async def handle_command(self, command: Command) -> list[Result]:
         command_type = type(command)

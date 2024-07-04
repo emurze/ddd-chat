@@ -12,10 +12,14 @@ def init_dummy_container() -> Container:
     def config_factory() -> AppConfig:
         return AppConfig(
             app_title="Test App",
-            secret_key="Test Key",
+            secret_key=".",
+            mongodb_connection_dsn=".",
+            mongodb_chat_database=".",
+            mongodb_chat_collection=".",
         )
 
     container = _init_container()
+
     container.register(AppConfig, factory=config_factory)
     container.register(
         IChatRepository,

@@ -1,8 +1,0 @@
-FROM emurze/testdb_postgres:16
-
-CMD [ \
-    "postgres", \
-     "-c", "max_connections=300", \
-     "-c", "shared_buffers=80MB", \
-     "-c", "kernel.shmmax=100663296" \
-]

@@ -5,7 +5,10 @@ from config.log_config import LogLevel
 
 
 class AppConfig(BaseSettings):
-    model_config = SettingsConfigDict(env_file="../.env", extra="allow")
+    model_config = SettingsConfigDict(
+        env_file="../.env.example",
+        extra="allow",
+    )
 
     # FastAPI
     app_title: str = "App"
@@ -18,3 +21,8 @@ class AppConfig(BaseSettings):
     secret_key: SecretStr
     debug: bool = True
     log_level: LogLevel | None = None
+
+    # MongoDB
+    mongodb_connection_dsn: str
+    mongodb_chat_database: str
+    mongodb_chat_collection: str

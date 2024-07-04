@@ -1,3 +1,7 @@
+from dataclasses import dataclass
+
+from motor.core import AgnosticClient
+
 from modules.chat.domain.entities import Chat
 from modules.chat.application.repositories import IChatRepository
 
@@ -22,7 +26,12 @@ class MemoryChatRepository(IChatRepository):
         self.identity_map[chat.id] = chat
 
 
+@dataclass(frozen=True)
 class MongoChatRepository(IChatRepository):
+    mongo_db_client: AgnosticClient
+    mongo_db_db_name: str
+    mongo_db_collection_name: str
+
     async def check_chat_exists_by_title(self, title: str) -> bool:
         raise NotImplementedError()
 

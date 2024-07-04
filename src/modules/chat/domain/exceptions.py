@@ -7,14 +7,14 @@ from seedwork.domain.exceptions import DomainException
 class TextIsEmptyException(DomainException):
     @property
     def message(self):
-        return f"Text is empty."
+        return f"Text is an empty."
 
 
 @dataclass(eq=False)
 class TitleIsEmptyException(DomainException):
     @property
     def message(self):
-        return f"Title is empty."
+        return f"Title is an empty."
 
 
 @dataclass(eq=False)

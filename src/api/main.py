@@ -1,7 +1,5 @@
-from collections.abc import Callable
-from typing import Optional, Any
-
 from fastapi import FastAPI
+from punq import Container
 from starlette.middleware.cors import CORSMiddleware
 
 from config.config import AppConfig
@@ -10,11 +8,7 @@ from config.log_config import configure_logging
 from api.chats.handlers import router as chats_router
 
 
-def create_app(
-    create_container: Optional[Callable] = init_container,
-    **dependency_overrides: Any,
-) -> FastAPI:
-    container = create_container()
+def create_app(container: Container = init_container()) -> FastAPI:
     config = container.resolve(AppConfig)
     configure_logging(config.log_level, config.debug)
 
@@ -24,7 +18,7 @@ def create_app(
         redoc_url=config.redoc_url,
         version=config.version,
         debug=config.debug,
-        **dependency_overrides,
+        container=container,
     )
     app.include_router(chats_router)
 

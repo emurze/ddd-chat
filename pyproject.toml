@@ -15,7 +15,8 @@ pytest = "^8.2.2"
 pytest-asyncio = "^0.23.7"
 faker = "^26.0.0"
 black = "^24.4.2"
-punq = "^0.7.0"
+motor = "^3.5.0"
+injector = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
 poethepoet = "^0.26.1"
@@ -24,14 +25,12 @@ poethepoet = "^0.26.1"
 DC = "docker compose"
 EXEC = "docker exec -it"
 APP_CONTAINER = "api"
+APP_FILE = "docker-compose.yml"
 
 [tool.poe.tasks]
-up      = "$DC up --build -d"
-
-logs    = "$DC logs -f $APP_CONTAINER"
-
+up      = "$DC -f $APP_FILE up --build -d"
+logs    = "$DC -f $APP_FILE logs -f $APP_CONTAINER"
 test    = "$EXEC $APP_CONTAINER pytest"
-
 shell   = "$EXEC $APP_CONTAINER bash"
 
 [tool.pytest.ini_options]
@@ -49,7 +48,7 @@ markers = [
     "e2e: marks tests as e2e tests i.e. using a client api and a database (deselect with '-m \"not e2e\"')",
     "marked: just marked"
 ]
-pythonpath = [".", "src"]
+pythonpath = [".", "src", "injector_spicking"]  # TODO: TEMP
 
 [tool.black]
 line-length = 79
