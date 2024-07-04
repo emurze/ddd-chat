@@ -1,8 +1,5 @@
-from typing import TypeAlias
-
-import motor
 from injector import Module, singleton, Binder, Injector, inject
-from motor.core import AgnosticClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from config.config import AppConfig
 from modules.chat.application.commands.create_chat import (
@@ -14,16 +11,14 @@ from modules.chat.infra.repositories import MongoChatRepository
 from seedwork.application.mediator import Mediator
 from seedwork.infra.injector import singleton_provider
 
-MongoDBClient: TypeAlias = AgnosticClient
-
 
 class AppModule(Module):
     def configure(self, binder: Binder) -> None:
         binder.bind(AppConfig, to=AppConfig, scope=singleton)
 
     @singleton_provider
-    def provide_mongodb_client(self, config: AppConfig) -> MongoDBClient:
-        return motor.MotorClient(
+    def provide_mongodb_client(self, config: AppConfig) -> AsyncIOMotorClient:
+        return AsyncIOMotorClient(
             config.mongodb_connection_dsn,
             serverSelectionTimeoutMS=5000,
         )
@@ -31,7 +26,7 @@ class AppModule(Module):
     @singleton_provider
     def provide_mongodb_chat_repository(
         self,
-        mongodb_client: MongoDBClient,
+        mongodb_client: AsyncIOMotorClient,
         config: AppConfig,
     ) -> IChatRepository:
         return MongoChatRepository(

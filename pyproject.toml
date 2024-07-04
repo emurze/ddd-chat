@@ -26,8 +26,10 @@ DC = "docker compose"
 EXEC = "docker exec -it"
 APP_CONTAINER = "api"
 APP_FILE = "docker-compose.yml"
+PYTHONPATH = "src"
 
 [tool.poe.tasks]
+start   = "uvicorn --factory api.main:create_app --reload --port 8080 --host 0.0.0.0"
 up      = "$DC -f $APP_FILE up --build -d"
 logs    = "$DC -f $APP_FILE logs -f $APP_CONTAINER"
 test    = "$EXEC $APP_CONTAINER pytest"
@@ -48,7 +50,7 @@ markers = [
     "e2e: marks tests as e2e tests i.e. using a client api and a database (deselect with '-m \"not e2e\"')",
     "marked: just marked"
 ]
-pythonpath = [".", "src", "injector_spicking"]  # TODO: TEMP
+pythonpath = [".", "src"]
 
 [tool.black]
 line-length = 79

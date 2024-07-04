@@ -24,4 +24,4 @@ RUN poetry install --no-root --no-interaction --no-ansi
 COPY src src
 
 EXPOSE 8000
-CMD uvicorn --factory api.main:create_app --reload --port 80 --host 0.0.0.0
+CMD ["poe", "start"]

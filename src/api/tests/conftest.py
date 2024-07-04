@@ -4,17 +4,11 @@ from injector import Injector
 from starlette.testclient import TestClient
 
 from api.main import create_app
-from api.tests.fixtures import init_e2e_injector
-
-
-@pytest.fixture(scope="session")
-def injector() -> Injector:
-    return init_e2e_injector()
 
 
 @pytest.fixture(scope="function")
-def app(injector: Injector) -> FastAPI:
-    return create_app(injector)
+def app(infra_injector: Injector) -> FastAPI:
+    return create_app(infra_injector)
 
 
 @pytest.fixture(scope="function")
