@@ -1,7 +1,7 @@
 import pytest
 from fastapi import FastAPI
+from httpx import AsyncClient
 from injector import Injector
-from starlette.testclient import TestClient
 
 from api.main import create_app
 
@@ -12,5 +12,8 @@ def app(infra_injector: Injector) -> FastAPI:
 
 
 @pytest.fixture(scope="function")
-def client(app: FastAPI) -> TestClient:
-    return TestClient(app=app)
+async def client(app: FastAPI) -> AsyncClient:
+    async with AsyncClient(
+        app=app, base_url="http://test"
+    ) as ac:  # TODO: understand
+        yield ac

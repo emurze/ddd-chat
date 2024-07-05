@@ -1,19 +1,19 @@
 version: "3.8"
 services:
-  api:
-    build: .
-    container_name: api
-    image: api:1
-    env_file: .env
-    networks:
-      - backend
-    ports:
-      - '${API_PORT}:80'
-    volumes:
-      - ./src:/service/src
-    restart: unless-stopped
-    depends_on:
-      - mongodb
+#  api:
+#    build: .
+#    container_name: api
+#    image: api:1
+#    env_file: .env
+#    networks:
+#      - backend
+#    ports:
+#      - '${API_PORT}:80'
+#    volumes:
+#      - ./src:/service/src
+#    restart: unless-stopped
+#    depends_on:
+#      - mongodb
 
   mongodb:
     container_name: mongodb

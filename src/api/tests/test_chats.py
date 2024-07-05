@@ -1,19 +1,19 @@
 import pytest
 from faker import Faker
 from fastapi import FastAPI
+from httpx import AsyncClient
 from starlette import status
-from starlette.testclient import TestClient
 
 
 @pytest.mark.e2e
-def test_create_chat_success(
+async def test_create_chat_success(
     app: FastAPI,
-    client: TestClient,
+    client: AsyncClient,
     faker: Faker,
 ) -> None:
     url = app.url_path_for("create_chat")
     title = faker.text(max_nb_chars=100)
-    response = client.post(url, json={"title": title})
+    response = await client.post(url, json={"title": title})
     json_data = response.json()
 
     assert response.status_code == status.HTTP_201_CREATED
@@ -21,15 +21,15 @@ def test_create_chat_success(
 
 
 @pytest.mark.e2e
-def test_create_chat_fail_the_same_title_already_exists(
+async def test_create_chat_fail_the_same_title_already_exists(
     app: FastAPI,
-    client: TestClient,
+    client: AsyncClient,
     faker: Faker,
 ) -> None:
     url = app.url_path_for("create_chat")
     title = faker.text(max_nb_chars=100)
-    client.post(url, json={"title": title})
-    response = client.post(url, json={"title": title})
+    await client.post(url, json={"title": title})
+    response = await client.post(url, json={"title": title})
     json_data = response.json()
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST, json_data
@@ -37,14 +37,14 @@ def test_create_chat_fail_the_same_title_already_exists(
 
 
 @pytest.mark.e2e
-def test_create_chat_fail_title_is_too_long(
+async def test_create_chat_fail_title_is_too_long(
     app: FastAPI,
-    client: TestClient,
+    client: AsyncClient,
     faker: Faker,
 ) -> None:
     url = app.url_path_for("create_chat")
     title = faker.text(max_nb_chars=300)
-    response = client.post(url, json={"title": title})
+    response = await client.post(url, json={"title": title})
     json_data = response.json()
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST, json_data
@@ -52,12 +52,12 @@ def test_create_chat_fail_title_is_too_long(
 
 
 @pytest.mark.e2e
-def test_create_chat_fail_title_is_empty(
+async def test_create_chat_fail_title_is_empty(
     app: FastAPI,
-    client: TestClient,
+    client: AsyncClient,
 ) -> None:
     url = app.url_path_for("create_chat")
-    response = client.post(url, json={"title": ""})
+    response = await client.post(url, json={"title": ""})
     json_data = response.json()
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST, json_data
